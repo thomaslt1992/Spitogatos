@@ -48,16 +48,16 @@ def competitiveness_index(df, weights):
     df_copy = df.copy()
 
     df_copy['Floor_Factor'] = np.where(df_copy['floor'] >= 3, 3, df_copy['floor'])
-    df_copy['Floor_Factor'] = df_copy['Floor_Factor'] * -1
+    df_copy['Floor_Factor'] = df_copy['Floor_Factor']
     df_copy['Rooms_Factor'] = (1 + df_copy['rooms'])**1.5
     df_copy['Deviation_Factor'] = np.sqrt((df_copy['price_per_sqrm'] - df_copy.groupby('geography_name')['price_per_sqrm'].transform('median'))**2)
-    df_copy['Deviation_Factor'] = df_copy.groupby('geography_name')['Deviation_Factor'].transform(lambda x: x / x.max())
+    df_copy['Deviation_Factor'] = -df_copy.groupby('geography_name')['Deviation_Factor'].transform(lambda x: x / x.max())
     ad_type_dict = {'simple': 0, 'up': 1, 'star': 2, 'premium': 3}
 
     df_copy['Ad_Type_Factor'] = df_copy['ad_type'].map(ad_type_dict)
 
     df_copy['Year_of_Construction'] = pd.cut(df_copy['year_of_construction'], bins=[-np.inf, 1970, 2000, np.inf], labels=['old', 'mid', 'new'])
-    construction_dict = {'old': 2, 'mid': 1, 'new': -2}
+    construction_dict = {'old': -2, 'mid': 1, 'new': 2}
     df_copy['Construction_Factor'] = df_copy['Year_of_Construction'].map(construction_dict)
 
     df_copy['Competitiveness_Index'] = np.dot(df_copy[['Floor_Factor', 'Rooms_Factor', 'Deviation_Factor', 'Ad_Type_Factor', 'Construction_Factor']], weights)
