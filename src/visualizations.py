@@ -33,6 +33,7 @@ def plot_median_target_by_group(df, big_group='geography_name', small_group='sub
                 axs[i].text(j, row['median'] + row['std'] + 5, f"{row['median']:.0f} +/- {row['std']:.0f}", ha='center', fontsize=8)
 
         axs[i].set_xticklabels(axs[i].get_xticklabels(), rotation=45, ha='right', fontsize=7)
+        axs[i].set_xlabel(None)
         axs[i].set_ylabel(target.capitalize(), fontsize=7)
         axs[i].set_title(f'Median {target.capitalize()} by {small_group.capitalize()} in {area}', fontsize=9)
 
